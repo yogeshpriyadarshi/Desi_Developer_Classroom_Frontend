@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import axiosInstance from "../utils/axiosIntances";
-import { FaHome, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaSignOutAlt, FaUser } from "react-icons/fa";
 
 function Header() {
   const logout = async () => {
@@ -21,6 +21,14 @@ function Header() {
       >
         <FaHome />
         Home
+      </Link>
+
+      <Link
+        to="/profile"
+        className="flex items-center gap-2 text-blue-500 text-xl border border-blue-500 p-2 rounded-md hover:bg-blue-50"
+      >
+        <FaUser />
+        Profile
       </Link>
 
       <button

@@ -8,6 +8,7 @@ import Signup from "./components/auth/Signup";
 import TodoList from "./components/todolist/TodoList";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import Profile from "./components/user/Profile";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="practice" element={<Practice />} />
           <Route path="quiz" element={<Quiz />} />
           <Route path="todolist" element={<TodoList />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Route>
     </Routes>

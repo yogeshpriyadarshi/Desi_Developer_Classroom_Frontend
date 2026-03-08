@@ -5,7 +5,7 @@ function TodoList() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [todos, setTodos] = useState([]);
-  const [day, setDay] = useState(new Date().getDate());
+  const [day, setDay] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,7 +32,9 @@ function TodoList() {
   };
 
   useEffect(() => {
-    getTodos();
+    if (day) {
+      getTodos();
+    }
   }, [day]);
 
   const handleSubmit = async (e) => {

@@ -16,6 +16,10 @@ function Login() {
     try {
       setMessage("Logging in...");
       console.log(email, password);
+      if (!email || !password) {
+        setMessage("Please enter email and password");
+        return;
+      }
       const response = await axiosInstance.post(`/auth/login`, {
         email,
         password,
@@ -44,6 +48,8 @@ function Login() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="border border-gray-300 p-2 w-full rounded-md pr-10"
             />
 
