@@ -10,6 +10,15 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import Profile from "./components/user/Profile";
 
+import TaskCategory from "./components/task-management/TaskCategory";
+import AddTask from "./components/task-management/AddTask";
+
+import MyEditor from "./components/editor/MyEditor";
+import TaskManagement from "./components/task-management/TaskManagement";
+import Projects from "./components/task-management/Projects";
+import DailyTaskViewer from "./components/task-management/DailyTaskViewer";
+import DailyTaskPerformance from "./components/task-management/DailyTaskPerformance.jsx";
+
 function App() {
   return (
     <Routes>
@@ -27,6 +36,20 @@ function App() {
           <Route path="quiz" element={<Quiz />} />
           <Route path="todolist" element={<TodoList />} />
           <Route path="profile" element={<Profile />} />
+
+          {/* TASK PARENT ROUTE */}
+          <Route path="task-management" element={<TaskManagement />}>
+            <Route path="projects" element={<Projects />} />
+            <Route path="task/:id" element={<AddTask />} />
+            <Route path="category/:id" element={<TaskCategory />} />
+            <Route path="daily-task-viewer" element={<DailyTaskViewer />} />
+            <Route
+              path="daily-task-performance/:taskId"
+              element={<DailyTaskPerformance />}
+            />
+          </Route>
+
+          <Route path="myeditor" element={<MyEditor />} />
         </Route>
       </Route>
     </Routes>

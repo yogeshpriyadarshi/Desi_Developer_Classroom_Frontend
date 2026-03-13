@@ -7,6 +7,8 @@ function SideBar() {
     { name: "practice", icon: <FaDumbbell /> },
     { name: "quiz", icon: <FaQuestionCircle /> },
     { name: "todolist", icon: <FaList /> },
+    { name: "task-management", icon: <FaList /> },
+    { name: "myeditor", icon: <FaList /> },
   ];
 
   return (
