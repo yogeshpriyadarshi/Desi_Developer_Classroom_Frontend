@@ -9,8 +9,13 @@ function TaskManagement() {
       icon: <FaList />,
     },
     {
-      name: "Daily Task Viewer",
-      path: "/task-management/daily-task-viewer",
+      name: "Daily Task Update",
+      path: "/task-management/daily-task-update",
+      icon: <FaList />,
+    },
+    {
+      name: "Task Log Viewer",
+      path: "/task-management/task-log-viewer",
       icon: <FaList />,
     },
   ];

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosIntances";
 import { Link } from "react-router-dom";
 
-function DailyTaskViewer() {
+function DailyTaskUpdate() {
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -131,4 +131,4 @@ function DailyTaskViewer() {
   );
 }
 
-export default DailyTaskViewer;
+export default DailyTaskUpdate;

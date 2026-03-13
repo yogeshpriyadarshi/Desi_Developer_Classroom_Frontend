@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosIntances";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function DailyTaskPerformance() {
   const { taskId } = useParams();
@@ -8,7 +9,6 @@ function DailyTaskPerformance() {
   const [task, setTask] = useState(null);
 
   const [status, setStatus] = useState("pending");
-  const [priority, setPriority] = useState("medium");
   const [productivity, setProductivity] = useState(5);
   const [urgency, setUrgency] = useState(5);
   const [timeSpent, setTimeSpent] = useState(0);
@@ -20,11 +20,13 @@ function DailyTaskPerformance() {
   const getTask = async () => {
     try {
       const res = await axiosInstance.get(`/task-management/tasks/${taskId}`);
+
       if (res.data.success) {
         setTask(res.data.task);
       }
     } catch (err) {
       console.log(err);
+      toast.error("Failed to load task");
     }
   };
 
@@ -32,12 +34,33 @@ function DailyTaskPerformance() {
     getTask();
   }, []);
 
+  // validation
+  const validateForm = () => {
+    if (productivity < 1 || productivity > 10) {
+      toast.warning("Productivity must be between 1 and 10");
+      return false;
+    }
+
+    if (urgency < 1 || urgency > 10) {
+      toast.warning("Urgency must be between 1 and 10");
+      return false;
+    }
+
+    if (timeSpent < 0) {
+      toast.warning("Time spent cannot be negative");
+      return false;
+    }
+
+    return true;
+  };
+
   const saveLog = async () => {
+    if (!validateForm()) return;
+
     try {
       await axiosInstance.post("/task-management/task-log", {
         task: taskId,
         status,
-        priority,
         productivity,
         urgency,
         timeSpent,
@@ -45,9 +68,16 @@ function DailyTaskPerformance() {
         date: today,
       });
 
-      alert("Performance updated");
+      toast.success("Performance updated successfully");
+
+      // optional reset
+      setProductivity(5);
+      setUrgency(5);
+      setTimeSpent(0);
+      setIsCompleted(false);
     } catch (err) {
       console.log(err);
+      toast.error("Failed to save performance");
     }
   };
 
@@ -57,16 +87,17 @@ function DailyTaskPerformance() {
     <div className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">Update Daily Performance</h1>
 
-      <div className="bg-white shadow-md p-6 rounded-lg space-y-4">
-        <h2 className="text-lg font-semibold">{task.title}</h2>
+      <div className="bg-white shadow-md p-6 rounded-lg space-y-5">
+        <h2 className="text-lg font-semibold text-gray-700">{task.title}</h2>
 
         {/* Status */}
         <div>
-          <label className="block mb-1 font-medium">Status</label>
+          <label className="block mb-1 font-medium text-gray-700">Status</label>
+
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full border rounded p-2"
+            className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-400"
           >
             <option value="pending">Pending</option>
             <option value="in-progress">In Progress</option>
@@ -74,55 +105,50 @@ function DailyTaskPerformance() {
           </select>
         </div>
 
-        {/* Priority */}
-        <div>
-          <label className="block mb-1 font-medium">Priority</label>
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            className="w-full border rounded p-2"
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-        </div>
-
         {/* Productivity */}
         <div>
-          <label className="block mb-1 font-medium">Productivity (1-10)</label>
+          <label className="block mb-1 font-medium text-gray-700">
+            Productivity (1 - 10)
+          </label>
+
           <input
             type="number"
             min="1"
             max="10"
             value={productivity}
-            onChange={(e) => setProductivity(e.target.value)}
-            className="w-full border rounded p-2"
+            onChange={(e) => setProductivity(Number(e.target.value))}
+            className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
         {/* Urgency */}
         <div>
-          <label className="block mb-1 font-medium">Urgency (1-10)</label>
+          <label className="block mb-1 font-medium text-gray-700">
+            Urgency (1 - 10)
+          </label>
+
           <input
             type="number"
             min="1"
             max="10"
             value={urgency}
-            onChange={(e) => setUrgency(e.target.value)}
-            className="w-full border rounded p-2"
+            onChange={(e) => setUrgency(Number(e.target.value))}
+            className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
         {/* Time Spent */}
         <div>
-          <label className="block mb-1 font-medium">Time Spent (minutes)</label>
+          <label className="block mb-1 font-medium text-gray-700">
+            Time Spent (minutes)
+          </label>
+
           <input
             type="number"
             min="0"
             value={timeSpent}
-            onChange={(e) => setTimeSpent(e.target.value)}
-            className="w-full border rounded p-2"
+            onChange={(e) => setTimeSpent(Number(e.target.value))}
+            className="w-full border rounded p-2 focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
@@ -133,13 +159,13 @@ function DailyTaskPerformance() {
             checked={isCompleted}
             onChange={(e) => setIsCompleted(e.target.checked)}
           />
-          <label>Mark as Completed</label>
+          <label className="text-gray-700">Mark as Completed</label>
         </div>
 
-        {/* Button */}
+        {/* Save Button */}
         <button
           onClick={saveLog}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
         >
           Save Performance
         </button>
