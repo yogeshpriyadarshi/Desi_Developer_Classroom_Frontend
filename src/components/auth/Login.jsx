@@ -3,82 +3,131 @@ import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosIntances";
 import { useAuth } from "../../context/AuthContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const { setIsLogin } = useAuth();
+
+  const validateForm = () => {
+    if (!email) {
+      toast.warning("Email is required");
+      return false;
+    }
+
+    if (!password) {
+      toast.warning("Password is required");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleLogin = async () => {
+    if (!validateForm()) return;
+
     try {
-      setMessage("Logging in...");
-      console.log(email, password);
-      if (!email || !password) {
-        setMessage("Please enter email and password");
-        return;
-      }
+      setLoading(true);
+
       const response = await axiosInstance.post(`/auth/login`, {
         email,
         password,
       });
-      setMessage(response.data.message);
-      setIsLogin(true);
+
       localStorage.setItem("access_token", response.data.access_token);
+      setIsLogin(true);
+
+      toast.success("Login successful 🎉");
 
       navigate("/");
     } catch (error) {
-      setMessage(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   return (
-    <>
-      <div className="flex  mt-10 items-center justify-around  min-h-screen">
-        <div className="flex flex-col">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Login to Your Account
+        </h2>
+
+        {/* Email */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email
+          </label>
+
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Enter your email"
             value={email}
-            className="border border-gray-300 rounded-md p-2 m-2"
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={handleKeyPress}
+            className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 outline-none"
           />
-          <div className="relative w-full max-w-sm">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border border-gray-300 p-2 w-full rounded-md pr-10"
-            />
+        </div>
 
-            <span
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-          <button
-            onClick={handleLogin}
-            className="border border-gray-300 rounded-md p-2 m-2 bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
+        {/* Password */}
+        <div className="mb-5 relative">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Password
+          </label>
+
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyPress}
+            className="w-full border border-gray-300 rounded-md p-2 pr-10 focus:ring-2 focus:ring-blue-400 outline-none"
+          />
+
+          <span
+            className="absolute right-3 top-9 cursor-pointer text-gray-500"
+            onClick={() => setShowPassword(!showPassword)}
           >
-            Login
-          </button>
-          <p>{message}</p>
-          <div className="flex flex-col">
-            <p>Don't have an account?</p>
-            <Link
-              to="/signup"
-              className="text-blue-500 hover:underline cursor-pointer"
-            >
-              Sign Up
-            </Link>
-          </div>
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+
+        {/* Login Button */}
+        <button
+          onClick={handleLogin}
+          disabled={loading}
+          className={`w-full py-2 rounded-md text-white transition
+            ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+        {/* Signup Link */}
+        <div className="text-center mt-5">
+          <p className="text-gray-600 text-sm">Don't have an account?</p>
+
+          <Link to="/signup" className="text-blue-500 hover:underline text-sm">
+            Create Account
+          </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
