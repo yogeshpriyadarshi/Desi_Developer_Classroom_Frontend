@@ -12,15 +12,14 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import Profile from "./components/user/Profile";
 
-import TaskCategory from "./components/task-management/TaskCategory";
-import AddTask from "./components/task-management/AddTask";
-
 import MyEditor from "./components/editor/MyEditor";
 import TaskManagement from "./components/task-management/TaskManagement";
-import Projects from "./components/task-management/Projects";
-import DailyTaskUpdate from "./components/task-management/DailyTaskUpdate";
-import DailyTaskPerformance from "./components/task-management/DailyTaskPerformance.jsx";
-import TaskLogViewer from "./components/task-management/TaskLogViewer.jsx";
+import Projects from "./components/task-management/project setup/Projects.jsx";
+import TaskCategory from "./components/task-management/project setup/TaskCategory.jsx";
+import AddTask from "./components/task-management/project setup/AddTask.jsx";
+import DailyTaskUpdate from "./components/task-management/update task/DailyTaskUpdate.jsx";
+import DailyTaskPerformance from "./components/task-management/update task/DailyTaskPerformance.jsx.jsx";
+import TaskLogViewer from "./components/task-management/task log/TaskLogViewer.jsx";
 
 function App() {
   return (

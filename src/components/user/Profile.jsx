@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosIntances";
+import { toast } from "react-toastify";
 
 function Profile() {
   const [user, setUser] = useState({});
+  const [originalUser, setOriginalUser] = useState({});
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const getProfile = async () => {
     try {
       const res = await axiosInstance.get("/users/profile");
       setUser(res.data.user);
+      setOriginalUser(res.data.user);
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to load profile");
     }
   };
 
@@ -22,92 +26,127 @@ function Profile() {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
+  const validate = () => {
+    if (user.phoneNumber && !/^[0-9]{10}$/.test(user.phoneNumber)) {
+      toast.warning("Phone number must be 10 digits");
+      return false;
+    }
+    return true;
+  };
+
   const updateProfile = async () => {
+    if (!validate()) return;
+
     try {
+      setLoading(true);
+
       const res = await axiosInstance.put("/users/profile", user);
-      console.log(res.data);
+
       setUser(res.data.user);
+      setOriginalUser(res.data.user);
       setEditMode(false);
+
+      toast.success("Profile updated successfully 🎉");
     } catch (error) {
-      console.log(error);
+      toast.error(error.response?.data?.message || "Update failed");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const cancelEdit = () => {
+    setUser(originalUser);
+    setEditMode(false);
+  };
+
   return (
-    <div className="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <div className="max-w-xl mx-auto mt-10 bg-white shadow-xl rounded-xl p-8">
+      {/* Header */}
+      <h2 className="text-2xl font-bold text-center mb-6">My Profile</h2>
+
       {/* Profile Image */}
-      <div className="flex flex-col items-center mb-6">
+      <div className="flex justify-center mb-6">
         <img
           src={
             user.imageUrl ||
             "https://cdn-icons-png.flaticon.com/512/149/149071.png"
           }
           alt="profile"
-          className="w-24 h-24 rounded-full object-cover"
+          className="w-28 h-28 rounded-full object-cover border-4 border-gray-200"
         />
       </div>
 
+      {/* Form */}
       <div className="space-y-4">
         {/* First Name */}
         <div>
-          <label className="font-semibold">First Name</label>
+          <label className="block font-medium mb-1">First Name</label>
           <input
             type="text"
             name="firstName"
             value={user.firstName || ""}
             disabled={!editMode}
             onChange={handleChange}
-            className="w-full border p-2 rounded-md"
+            className={`w-full border rounded-md p-2 ${
+              editMode ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
 
         {/* Last Name */}
         <div>
-          <label className="font-semibold">Last Name</label>
+          <label className="block font-medium mb-1">Last Name</label>
           <input
             type="text"
             name="lastName"
             value={user.lastName || ""}
             disabled={!editMode}
             onChange={handleChange}
-            className="w-full border p-2 rounded-md"
+            className={`w-full border rounded-md p-2 ${
+              editMode ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
 
         {/* Email */}
         <div>
-          <label className="font-semibold">Email</label>
+          <label className="block font-medium mb-1">Email</label>
           <input
             type="email"
             name="email"
             value={user.email || ""}
             disabled
-            className="w-full border p-2 rounded-md bg-gray-100"
+            className="w-full border rounded-md p-2 bg-gray-100 cursor-not-allowed"
           />
         </div>
 
         {/* Phone */}
         <div>
-          <label className="font-semibold">Phone Number</label>
+          <label className="block font-medium mb-1">Phone Number</label>
           <input
             type="text"
             name="phoneNumber"
             value={user.phoneNumber || ""}
             disabled={!editMode}
             onChange={handleChange}
-            className="w-full border p-2 rounded-md"
+            placeholder="Enter 10 digit number"
+            className={`w-full border rounded-md p-2 ${
+              editMode ? "bg-white" : "bg-gray-100"
+            }`}
           />
         </div>
 
         {/* Gender */}
         <div>
-          <label className="font-semibold">Gender</label>
+          <label className="block font-medium mb-1">Gender</label>
           <select
             name="gender"
             value={user.gender || ""}
             disabled={!editMode}
             onChange={handleChange}
-            className="w-full border p-2 rounded-md"
+            className={`w-full border rounded-md p-2 ${
+              editMode ? "bg-white" : "bg-gray-100"
+            }`}
           >
             <option value="">Select Gender</option>
             <option value="male">Male</option>
@@ -117,11 +156,11 @@ function Profile() {
       </div>
 
       {/* Buttons */}
-      <div className="mt-6 flex justify-between">
+      <div className="mt-8 flex justify-between">
         {!editMode ? (
           <button
             onClick={() => setEditMode(true)}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition"
           >
             Edit Profile
           </button>
@@ -129,14 +168,17 @@ function Profile() {
           <>
             <button
               onClick={updateProfile}
-              className="bg-green-500 text-white px-4 py-2 rounded-md"
+              disabled={loading}
+              className={`px-6 py-2 rounded-md text-white ${
+                loading ? "bg-gray-400" : "bg-green-500 hover:bg-green-600"
+              }`}
             >
-              Save
+              {loading ? "Saving..." : "Save"}
             </button>
 
             <button
-              onClick={() => setEditMode(false)}
-              className="bg-gray-400 text-white px-4 py-2 rounded-md"
+              onClick={cancelEdit}
+              className="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-md"
             >
               Cancel
             </button>
