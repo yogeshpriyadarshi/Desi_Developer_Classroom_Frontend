@@ -136,35 +136,13 @@ function Projects() {
                     <p className="text-gray-500 text-sm">
                       {project?.description}
                     </p>
-
-                    {/* CATEGORY LIST */}
-                    <div className="mt-3">
-                      <p className="text-sm font-medium text-gray-600 mb-1">
-                        Categories
-                      </p>
-
-                      {project.categories?.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
-                          {project.categories.map((cat) => (
-                            <span
-                              key={cat._id}
-                              className="bg-gray-100 px-2 py-1 rounded text-xs"
-                            >
-                              {cat.name}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-xs text-gray-400">No categories</p>
-                      )}
-                    </div>
                   </div>
 
                   {/* ACTION BUTTONS */}
                   <div className="flex flex-col gap-2">
                     <Link to={`/task-management/category/${project._id}`}>
                       <button className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
-                        Add Category
+                        Add/View Category
                       </button>
                     </Link>
 

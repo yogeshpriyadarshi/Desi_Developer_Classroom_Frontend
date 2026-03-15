@@ -8,6 +8,7 @@ function AddTask() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState({});
   const [priority, setPriority] = useState("medium");
+  const [isActive, setIsActive] = useState(true);
   const [tasks, setTasks] = useState([]);
 
   const [recurrenceType, setRecurrenceType] = useState("daily");
@@ -17,6 +18,9 @@ function AddTask() {
   const [endDate, setEndDate] = useState("");
 
   const [loading, setLoading] = useState(false);
+
+  const [editMode, setEditMode] = useState(false);
+  const [editingTaskId, setEditingTaskId] = useState(null);
 
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -64,6 +68,7 @@ function AddTask() {
     }
   };
 
+  // Validation
   const validateForm = () => {
     if (!title.trim()) {
       toast.warning("Task title is required");
@@ -88,6 +93,7 @@ function AddTask() {
     return true;
   };
 
+  // Add Task
   const addTask = async () => {
     if (!validateForm()) return;
 
@@ -113,12 +119,84 @@ function AddTask() {
       resetForm();
       getTasks();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to create task");
+      toast.error("Failed to create task");
     } finally {
       setLoading(false);
     }
   };
 
+  // Start Edit
+  const startEdit = (task) => {
+    setEditMode(true);
+    setEditingTaskId(task._id);
+
+    setTitle(task.title);
+    setDescription(task.description);
+    setPriority(task.priority);
+
+    setRecurrenceType(task.recurrenceType || "daily");
+    setDaysOfWeek(task.daysOfWeek || []);
+    setDayOfMonth(task.dayOfMonth || "");
+    setStartDate(task.startDate?.slice(0, 10) || "");
+    setEndDate(task.endDate?.slice(0, 10) || "");
+  };
+
+  // Update Task
+  const updateTask = async () => {
+    if (!validateForm()) return;
+
+    try {
+      setLoading(true);
+
+      await axiosInstance.put(`/task-management/tasks/${editingTaskId}`, {
+        title,
+        description,
+        recurrenceType,
+        daysOfWeek,
+        dayOfMonth,
+        startDate,
+        endDate,
+        priority,
+      });
+
+      toast.success("Task updated successfully");
+
+      resetForm();
+      getTasks();
+    } catch (err) {
+      toast.error("Failed to update task");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete Task
+  const deleteTask = async (taskId) => {
+    try {
+      await axiosInstance.delete(`/task-management/tasks/${taskId}`);
+
+      toast.success("Task deleted");
+
+      getTasks();
+    } catch (err) {
+      toast.error("Failed to delete task");
+    }
+  };
+
+  // Toggle Active
+  const toggleActive = async (taskId) => {
+    try {
+      await axiosInstance.put(`/task-management/tasks/${taskId}/active`);
+
+      toast.success("Task status updated");
+
+      getTasks();
+    } catch (err) {
+      toast.error("Failed to update task status");
+    }
+  };
+
+  // Reset Form
   const resetForm = () => {
     setTitle("");
     setDescription("");
@@ -128,6 +206,9 @@ function AddTask() {
     setStartDate("");
     setEndDate("");
     setPriority("medium");
+
+    setEditMode(false);
+    setEditingTaskId(null);
   };
 
   const priorityColor = {
@@ -151,118 +232,107 @@ function AddTask() {
 
       {/* Form */}
       <div className="bg-white shadow-lg rounded-xl p-6 space-y-5">
-        <h2 className="text-xl font-bold">Create Task</h2>
+        <h2 className="text-xl font-bold">
+          {editMode ? "Edit Task" : "Create Task"}
+        </h2>
 
         {/* Title */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Task Title</label>
-          <input
-            type="text"
-            placeholder="Enter task title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2"
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Task title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full border rounded-lg px-3 py-2"
+        />
 
         {/* Description */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
-          <textarea
-            rows="3"
-            placeholder="Task description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2"
-          />
-        </div>
+        <textarea
+          rows="3"
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full border rounded-lg px-3 py-2"
+        />
 
         {/* Priority */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Priority</label>
-
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            className="w-full border rounded-lg p-2"
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-        </div>
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+          className="w-full border rounded-lg p-2"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
 
         {/* Recurrence */}
-        <div className="border-t pt-4 space-y-4">
-          <h3 className="font-semibold text-gray-600">Recurrence Settings</h3>
+        <select
+          value={recurrenceType}
+          onChange={(e) => setRecurrenceType(e.target.value)}
+          className="w-full border rounded-lg p-2"
+        >
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
 
-          <select
-            value={recurrenceType}
-            onChange={(e) => setRecurrenceType(e.target.value)}
-            className="w-full border rounded-lg p-2"
-          >
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-          </select>
-
-          {/* Weekly */}
-          {recurrenceType === "weekly" && (
-            <div className="flex flex-wrap gap-2">
-              {weekDays.map((day, index) => (
-                <button
-                  key={index}
-                  onClick={() => toggleDay(index)}
-                  type="button"
-                  className={`px-3 py-1 rounded border ${
-                    daysOfWeek.includes(index)
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-100"
-                  }`}
-                >
-                  {day}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Monthly */}
-          {recurrenceType === "monthly" && (
-            <input
-              type="number"
-              placeholder="Day of month (1-31)"
-              value={dayOfMonth}
-              onChange={(e) => setDayOfMonth(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
-            />
-          )}
-
-          {/* Dates */}
-          <div className="grid md:grid-cols-2 gap-3">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="border rounded-lg px-3 py-2"
-            />
-
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="border rounded-lg px-3 py-2"
-            />
+        {recurrenceType === "weekly" && (
+          <div className="flex flex-wrap gap-2">
+            {weekDays.map((day, index) => (
+              <button
+                key={index}
+                onClick={() => toggleDay(index)}
+                type="button"
+                className={`px-3 py-1 rounded border ${
+                  daysOfWeek.includes(index)
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-100"
+                }`}
+              >
+                {day}
+              </button>
+            ))}
           </div>
+        )}
+
+        {recurrenceType === "monthly" && (
+          <input
+            type="number"
+            placeholder="Day of month"
+            value={dayOfMonth}
+            onChange={(e) => setDayOfMonth(e.target.value)}
+            className="w-full border rounded-lg px-3 py-2"
+          />
+        )}
+
+        <div className="grid md:grid-cols-2 gap-3">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border rounded-lg px-3 py-2"
+          />
+
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border rounded-lg px-3 py-2"
+          />
         </div>
 
         <button
-          onClick={addTask}
+          onClick={editMode ? updateTask : addTask}
           disabled={loading}
           className={`w-full py-2 rounded-lg text-white ${
-            loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+            loading
+              ? "bg-gray-400"
+              : editMode
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-blue-500 hover:bg-blue-600"
           }`}
         >
-          {loading ? "Creating Task..." : "Add Task"}
+          {loading ? "Saving..." : editMode ? "Update Task" : "Add Task"}
         </button>
       </div>
 
@@ -282,7 +352,7 @@ function AddTask() {
                 key={task._id}
                 className="bg-white border rounded-lg p-3 flex justify-between items-center"
               >
-                <div>
+                <div className="cursor-pointer" onClick={() => startEdit(task)}>
                   <p className="font-medium">{task.title}</p>
 
                   <span
@@ -293,6 +363,18 @@ function AddTask() {
                     {task.priority}
                   </span>
                 </div>
+
+                <button>Edit</button>
+                <button onClick={() => toggleActive(task._id)}>
+                  {task.isActive ? "Active" : "Inactive"}
+                </button>
+
+                <button
+                  onClick={() => deleteTask(task._id)}
+                  className="text-red-500 hover:text-red-700 text-sm"
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>

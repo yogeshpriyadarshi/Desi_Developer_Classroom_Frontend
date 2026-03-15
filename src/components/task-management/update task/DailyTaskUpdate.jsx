@@ -13,6 +13,21 @@ function DailyTaskUpdate() {
 
   const today = new Date();
 
+  // fetch All tasks
+  const getAllTasks = async () => {
+    try {
+      const res = await axiosInstance.get("/task-management/tasks");
+      setTasks(res.data.tasks);
+    } catch (err) {
+      toast.error("Failed to load tasks");
+    }
+  };
+
+  useEffect(() => {
+    getAllTasks();
+    getProjects();
+  }, []);
+
   // fetch projects
   const getProjects = async () => {
     try {
@@ -46,10 +61,6 @@ function DailyTaskUpdate() {
       toast.error("Failed to load tasks");
     }
   };
-
-  useEffect(() => {
-    getProjects();
-  }, []);
 
   const handleProject = (id) => {
     setSelectedProject(id);
