@@ -3,12 +3,9 @@ import { FaBook, FaDumbbell, FaQuestionCircle, FaList } from "react-icons/fa";
 
 function SideBar() {
   const sidebar = [
-    { name: "study", icon: <FaBook /> },
     { name: "practice", icon: <FaDumbbell /> },
-    { name: "quiz", icon: <FaQuestionCircle /> },
     { name: "todolist", icon: <FaList /> },
     { name: "task-management", icon: <FaList /> },
-    { name: "myeditor", icon: <FaList /> },
   ];
 
   return (

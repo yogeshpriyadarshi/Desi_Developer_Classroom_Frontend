@@ -1,165 +1,208 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import axiosInstance from "../../utils/axiosIntances";
+import { toast } from "react-toastify";
 
 function Practice() {
   const [subjects, setSubjects] = useState([]);
-  const [subjectId, setSubjectId] = useState("");
   const [topics, setTopics] = useState([]);
+
+  const [subjectId, setSubjectId] = useState("");
   const [topicId, setTopicId] = useState("");
-  const [concepts, setConcepts] = useState([]);
-  const [conceptId, setConceptId] = useState("");
+
+  const [difficulty, setDifficulty] = useState("");
+
   const [questions, setQuestions] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
-  const [showResult, setShowResult] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
-  const BASE_URL = import.meta.env.VITE_BASE_URL;
-  useEffect(() => {
-    //fetch subject axios
-    const fetchSubject = async () => {
-      const response = await axiosInstance.get(`/subjects/fetch-all`);
-      setSubjects(response.data.subjects);
-    };
-    fetchSubject();
-  }, []);
-  useEffect(() => {
-    //fetch topic axios
 
-    if (subjectId) {
-      const fetchTopicBySubject = async () => {
-        const response = await axiosInstance.get(
+  // Fetch Subjects
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const res = await axiosInstance.get("/subjects/fetch-all");
+        setSubjects(res.data.subjects);
+      } catch {
+        toast.error("Failed to load subjects");
+      }
+    };
+
+    fetchSubjects();
+  }, []);
+
+  // Fetch Topics
+  useEffect(() => {
+    if (!subjectId) return;
+
+    const fetchTopics = async () => {
+      try {
+        const res = await axiosInstance.get(
           `/topics/fetch-by-subject/${subjectId}`,
         );
-        setTopics(response.data.topics);
-      };
-      fetchTopicBySubject();
-    }
+        setTopics(res.data.topics);
+        setTopicId("");
+        setQuestions([]);
+      } catch {
+        toast.error("Failed to load topics");
+      }
+    };
+
+    fetchTopics();
   }, [subjectId]);
 
+  // fetch question
   useEffect(() => {
-    //fetch concept axios
-    if (topicId) {
-      const fetchConceptByTopic = async () => {
-        const response = await axiosInstance.get(
-          `/concepts/fetch-by-topic/${topicId}`,
-        );
-        setConcepts(response.data.concepts);
-      };
-      fetchConceptByTopic();
-    }
-  }, [topicId]);
+    if (!topicId || !difficulty) return;
 
-  useEffect(() => {
-    //fetch questions axios
-    if (conceptId) {
-      const fetchQuestionsByConcept = async () => {
-        const response = await axiosInstance.get(
-          `/questions/fetch-by-concept/${conceptId}`,
+    const fetchQuestions = async () => {
+      try {
+        const res = await axiosInstance.get(
+          `/questions/fetch-by-topic/${topicId}?difficulty=${difficulty}&status=active`,
         );
-        setQuestions(response.data.questions);
-      };
-      fetchQuestionsByConcept();
-    }
-  }, [conceptId]);
 
-  const handleAnswer = (option) => {
-    setSelectedAnswer(option);
+        setQuestions(res.data.questions);
+        setCurrentIndex(0);
+
+        toast.success("Questions loaded");
+      } catch {
+        toast.error("Failed to load questions");
+      }
+    };
+
+    fetchQuestions();
+  }, [topicId, difficulty]);
+
+  const handleAnswer = (option, index) => {
+    setSelectedAnswer(index);
     setShowExplanation(true);
+
+    if (index === questions[currentIndex].correctAnswer) {
+      toast.success("Correct Answer 🎉");
+    } else {
+      toast.error("Wrong Answer ❌");
+    }
   };
+
   const handleNext = () => {
     setCurrentIndex((prev) => prev + 1);
     setSelectedAnswer(null);
     setShowExplanation(false);
   };
+
+  const question = questions[currentIndex];
+
   return (
-    <>
-      <h1 className="text-5xl font-bold m-10 text-yellow-500 text-center">
+    <div className="max-w-3xl mx-auto p-6">
+      <h1 className="text-4xl font-bold text-center text-yellow-500 mb-8">
         Practice
       </h1>
-      <div className="flex justify-center">
+
+      {/* Subject + Topic */}
+
+      <div className="flex gap-4 justify-center mb-8">
         <select
           value={subjectId}
           onChange={(e) => setSubjectId(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 m-2"
+          className="border p-2 rounded-md"
         >
           <option value="">Select Subject</option>
-          {subjects.map((subject) => (
-            <option key={subject._id} value={subject._id}>
-              {subject.subjectName}
+          {subjects.map((s) => (
+            <option key={s._id} value={s._id}>
+              {s.name}
             </option>
           ))}
         </select>
+
         <select
           value={topicId}
           onChange={(e) => setTopicId(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 m-2"
+          className="border p-2 rounded-md"
         >
           <option value="">Select Topic</option>
-          {topics.map((topic) => (
-            <option key={topic._id} value={topic._id}>
-              {topic.topicName}
+          {topics.map((t) => (
+            <option key={t._id} value={t._id}>
+              {t.name}
             </option>
           ))}
         </select>
+
         <select
-          value={conceptId}
-          onChange={(e) => setConceptId(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 m-2"
+          value={difficulty}
+          onChange={(e) => setDifficulty(e.target.value)}
+          className="border p-2 rounded-md"
         >
-          <option value="">Select Concept</option>
-          {concepts.map((concept) => (
-            <option key={concept._id} value={concept._id}>
-              {concept.conceptName}
-            </option>
-          ))}
+          <option value="">Select Difficulty</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
         </select>
       </div>
-      {/* show one question at a time, button for next , also show explain after attempting a question */}
-      <div>
-        {questions.length > 0 && (
-          <div>
-            <p>
-              Q{currentIndex + 1}. {questions[currentIndex].question}
-            </p>
 
-            {questions[currentIndex].options.map((option, i) => (
+      {/* Question */}
+
+      {question && (
+        <div className="bg-white shadow-lg rounded-xl p-6">
+          <p className="text-lg font-semibold mb-6">
+            Q{currentIndex + 1}. {question.questionText}
+          </p>
+
+          <div className="grid gap-3">
+            {question.options.map((option, i) => (
               <button
                 key={i}
-                onClick={() => handleAnswer(option)}
+                onClick={() => handleAnswer(option, i)}
                 disabled={showExplanation}
+                className={`p-3 border rounded-lg text-left hover:bg-gray-100
+
+                ${
+                  showExplanation && i === question.correctAnswer
+                    ? "bg-green-200 border-green-400"
+                    : ""
+                }
+
+                ${
+                  showExplanation &&
+                  selectedAnswer === i &&
+                  i !== question.correctAnswer
+                    ? "bg-red-200 border-red-400"
+                    : ""
+                }
+                
+                `}
               >
                 {option}
               </button>
             ))}
-
-            {showExplanation && (
-              <div>
-                {selectedAnswer === questions[currentIndex].correctAnswer ? (
-                  <p style={{ color: "green" }}>Correct ✅</p>
-                ) : (
-                  <p style={{ color: "red" }}>
-                    Wrong ❌ | Correct Answer:{" "}
-                    {questions[currentIndex].correctAnswer}
-                  </p>
-                )}
-
-                <p>
-                  <strong>Explanation:</strong>{" "}
-                  {questions[currentIndex].explanation}
-                </p>
-
-                {currentIndex < questions.length - 1 && (
-                  <button onClick={handleNext}>Next</button>
-                )}
-              </div>
-            )}
           </div>
-        )}
-      </div>
-    </>
+
+          {showExplanation && (
+            <div className="mt-6 p-4 bg-gray-50 border rounded-md">
+              {selectedAnswer === question.correctAnswer ? (
+                <p className="text-green-600 font-semibold">Correct ✅</p>
+              ) : (
+                <p className="text-red-600 font-semibold">
+                  Wrong ❌ | Correct Answer: Option {question.correctAnswer + 1}
+                </p>
+              )}
+
+              <p className="mt-2">
+                <strong>Explanation:</strong> {question.explanation}
+              </p>
+
+              {currentIndex < questions.length - 1 && (
+                <button
+                  onClick={handleNext}
+                  className="mt-4 px-5 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                >
+                  Next →
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
