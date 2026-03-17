@@ -7,6 +7,7 @@ function DailyTaskPerformance() {
   const { taskId } = useParams();
 
   const [task, setTask] = useState(null);
+  const [description, setDescription] = useState("");
 
   const [status, setStatus] = useState("pending");
   const [productivity, setProductivity] = useState(5);
@@ -62,6 +63,7 @@ function DailyTaskPerformance() {
 
       await axiosInstance.post("/task-management/task-log", {
         task: taskId,
+        description,
         status,
         productivity,
         urgency,
@@ -120,6 +122,18 @@ function DailyTaskPerformance() {
       {/* Performance Form */}
 
       <div className="bg-white shadow-lg rounded-xl p-6 space-y-6">
+        {/* descriptin */}
+
+        <div>
+          <label className="block font-medium mb-1">Description</label>
+
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
+          ></textarea>
+        </div>
+
         {/* Status */}
 
         <div>
