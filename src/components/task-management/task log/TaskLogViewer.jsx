@@ -121,7 +121,7 @@ function TaskLogViewer() {
                     {/* description */}
                     <input
                       type="text"
-                      value={editData.description}
+                      value={editData?.description}
                       onChange={(e) =>
                         setEditData({
                           ...editData,
@@ -183,6 +183,10 @@ function TaskLogViewer() {
                   </div>
                 ) : (
                   <div className="flex gap-2 mt-2">
+                    {/* description */}
+                    <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                      {log.description ?? "-"}
+                    </span>
                     <span
                       className={`text-xs px-2 py-1 rounded ${
                         statusColor[log.status]
