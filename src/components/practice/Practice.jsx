@@ -8,7 +8,6 @@ function Practice() {
 
   const [subjectId, setSubjectId] = useState("");
   const [topicId, setTopicId] = useState("");
-
   const [difficulty, setDifficulty] = useState("");
 
   const [questions, setQuestions] = useState([]);
@@ -17,7 +16,6 @@ function Practice() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
 
-  // Fetch Subjects
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
@@ -27,11 +25,9 @@ function Practice() {
         toast.error("Failed to load subjects");
       }
     };
-
     fetchSubjects();
   }, []);
 
-  // Fetch Topics
   useEffect(() => {
     if (!subjectId) return;
 
@@ -51,7 +47,6 @@ function Practice() {
     fetchTopics();
   }, [subjectId]);
 
-  // fetch question
   useEffect(() => {
     if (!topicId || !difficulty) return;
 
@@ -63,6 +58,8 @@ function Practice() {
 
         setQuestions(res.data.questions);
         setCurrentIndex(0);
+        setSelectedAnswer(null);
+        setShowExplanation(false);
 
         toast.success("Questions loaded");
       } catch {
@@ -73,7 +70,7 @@ function Practice() {
     fetchQuestions();
   }, [topicId, difficulty]);
 
-  const handleAnswer = (option, index) => {
+  const handleAnswer = (index) => {
     setSelectedAnswer(index);
     setShowExplanation(true);
 
@@ -85,7 +82,20 @@ function Practice() {
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => prev + 1);
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+      resetState();
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+      resetState();
+    }
+  };
+
+  const resetState = () => {
     setSelectedAnswer(null);
     setShowExplanation(false);
   };
@@ -93,18 +103,17 @@ function Practice() {
   const question = questions[currentIndex];
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-4xl font-bold text-center text-yellow-500 mb-8">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
+      <h1 className="text-2xl sm:text-4xl font-bold text-center text-yellow-500 mb-6">
         Practice
       </h1>
 
-      {/* Subject + Topic */}
-
-      <div className="flex gap-4 justify-center mb-8">
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6">
         <select
           value={subjectId}
           onChange={(e) => setSubjectId(e.target.value)}
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md w-full sm:w-auto"
         >
           <option value="">Select Subject</option>
           {subjects.map((s) => (
@@ -117,7 +126,7 @@ function Practice() {
         <select
           value={topicId}
           onChange={(e) => setTopicId(e.target.value)}
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md w-full sm:w-auto"
         >
           <option value="">Select Topic</option>
           {topics.map((t) => (
@@ -130,7 +139,7 @@ function Practice() {
         <select
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value)}
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md w-full sm:w-auto"
         >
           <option value="">Select Difficulty</option>
           <option value="easy">Easy</option>
@@ -140,20 +149,25 @@ function Practice() {
       </div>
 
       {/* Question */}
-
       {question && (
-        <div className="bg-white shadow-lg rounded-xl p-6">
-          <p className="text-lg font-semibold mb-6">
-            Q{currentIndex + 1}. {question.questionText}
+        <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6">
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-sm sm:text-lg font-semibold">
+              Question {currentIndex + 1} / {questions.length}
+            </p>
+          </div>
+
+          <p className="text-base sm:text-lg font-semibold mb-4">
+            {question.questionText}
           </p>
 
           <div className="grid gap-3">
             {question.options.map((option, i) => (
               <button
                 key={i}
-                onClick={() => handleAnswer(option, i)}
+                onClick={() => handleAnswer(i)}
                 disabled={showExplanation}
-                className={`p-3 border rounded-lg text-left hover:bg-gray-100
+                className={`p-3 border rounded-lg text-left hover:bg-gray-100 text-sm sm:text-base
 
                 ${
                   showExplanation && i === question.correctAnswer
@@ -168,7 +182,6 @@ function Practice() {
                     ? "bg-red-200 border-red-400"
                     : ""
                 }
-                
                 `}
               >
                 {option}
@@ -177,7 +190,7 @@ function Practice() {
           </div>
 
           {showExplanation && (
-            <div className="mt-6 p-4 bg-gray-50 border rounded-md">
+            <div className="mt-5 p-4 bg-gray-50 border rounded-md">
               {selectedAnswer === question.correctAnswer ? (
                 <p className="text-green-600 font-semibold">Correct ✅</p>
               ) : (
@@ -186,20 +199,30 @@ function Practice() {
                 </p>
               )}
 
-              <p className="mt-2">
+              <p className="mt-2 text-sm sm:text-base">
                 <strong>Explanation:</strong> {question.explanation}
               </p>
-
-              {currentIndex < questions.length - 1 && (
-                <button
-                  onClick={handleNext}
-                  className="mt-4 px-5 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                >
-                  Next →
-                </button>
-              )}
             </div>
           )}
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between mt-6 gap-3">
+            <button
+              onClick={handlePrev}
+              disabled={currentIndex === 0}
+              className="px-4 py-2 bg-gray-400 text-white rounded-md disabled:opacity-50"
+            >
+              ← Previous
+            </button>
+
+            <button
+              onClick={handleNext}
+              disabled={currentIndex === questions.length - 1}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50"
+            >
+              Next →
+            </button>
+          </div>
         </div>
       )}
     </div>
