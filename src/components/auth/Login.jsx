@@ -39,12 +39,14 @@ function Login() {
         password,
       });
 
-      localStorage.setItem("access_token", response.data.access_token);
-      setIsLogin(true);
-
-      toast.success("Login successful 🎉");
-
-      navigate("/");
+      if (response.data.success) {
+        localStorage.setItem("access_token", response.data.access_token);
+        setIsLogin(true);
+        toast.success("Login successful 🎉");
+        navigate("/");
+      } else {
+        toast.error(response.data.message || "Login failed");
+      }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
