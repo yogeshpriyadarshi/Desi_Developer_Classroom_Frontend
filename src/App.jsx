@@ -1,15 +1,15 @@
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
+import Home from "./routing/Home.jsx";
 import Practice from "./components/practice/Practice";
 import Quiz from "./components/quiz/Quiz";
 import Study from "./components/study/Study";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import TodoList from "./components/todolist/TodoList";
-import ProtectedRoute from "./components/ProtectedRoute";
-import PublicRoute from "./components/PublicRoute";
+import ProtectedRoute from "./routing/ProtectedRoute.jsx";
+import PublicRoute from "./routing/PublicRoute.jsx";
 import Profile from "./components/user/Profile";
 
 import MyEditor from "./components/editor/MyEditor";
@@ -20,6 +20,12 @@ import AddTask from "./components/task-management/project setup/AddTask.jsx";
 import DailyTaskUpdate from "./components/task-management/update task/DailyTaskUpdate.jsx";
 import DailyTaskPerformance from "./components/task-management/update task/DailyTaskPerformance.jsx.jsx";
 import TaskLogViewer from "./components/task-management/task log/TaskLogViewer.jsx";
+import Quant from "./components/desi-quant/Quant.jsx";
+import DesiHtml from "./components/desi-HTML/DesiHtml.jsx";
+import DesiCSS from "./components/desi-CSS/DesiCSS.jsx";
+import DesiJavascript from "./components/desi-Javascript/DesiJavascript.jsx";
+import DesiReact from "./components/desi-React/DesiReact.jsx";
+import DesiNode from "./components/desi-Node/DesiNode.jsx";
 
 function App() {
   return (
@@ -36,6 +42,12 @@ function App() {
           <Route path="/" element={<Home />}>
             <Route path="study" element={<Study />} />
             <Route path="practice" element={<Practice />} />
+            <Route path="quant" element={<Quant />} />
+            <Route path="desi-html" element={<DesiHtml />} />
+            <Route path="desi-css" element={<DesiCSS />} />
+            <Route path="desi-javascript" element={<DesiJavascript />} />
+            <Route path="desi-react" element={<DesiReact />} />
+            <Route path="desi-node" element={<DesiNode />} />
             <Route path="quiz" element={<Quiz />} />
             <Route path="todolist" element={<TodoList />} />
             <Route path="profile" element={<Profile />} />

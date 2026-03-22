@@ -6,9 +6,14 @@ function SideBar({ closeSidebar }) {
   const location = useLocation();
 
   const sidebar = [
-    { name: "practice", icon: <FaDumbbell /> },
-    { name: "todolist", icon: <FaList /> },
-    { name: "task-management", icon: <FaList /> },
+    { path: "desi-html", title: "HTML", icon: <FaList /> },
+    { path: "desi-css", title: "CSS", icon: <FaList /> },
+    { path: "desi-javascript", title: "Javascript", icon: <FaList /> },
+    { path: "desi-react", title: "React", icon: <FaList /> },
+    { path: "desi-node", title: "Node", icon: <FaList /> },
+    { path: "quant", title: "Quantitative Aptitude", icon: <FaDumbbell /> },
+    { path: "todolist", title: "To Do List", icon: <FaList /> },
+    { path: "task-management", title: "Task Management", icon: <FaList /> },
   ];
 
   return (
@@ -19,12 +24,12 @@ function SideBar({ closeSidebar }) {
       </button>
 
       {sidebar.map((item) => {
-        const isActive = location.pathname === `/${item.name}`;
+        const isActive = location.pathname === `/${item.path}`;
 
         return (
           <Link
-            key={item.name}
-            to={`/${item.name}`}
+            key={item.path}
+            to={`/${item.path}`}
             onClick={closeSidebar}
             className={`flex items-center gap-3 text-lg p-2 rounded-md border
             ${
@@ -34,7 +39,7 @@ function SideBar({ closeSidebar }) {
             }`}
           >
             {item.icon}
-            {item.name}
+            {item.title}
           </Link>
         );
       })}
