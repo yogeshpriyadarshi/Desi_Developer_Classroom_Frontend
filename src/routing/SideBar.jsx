@@ -11,6 +11,7 @@ function SideBar({ closeSidebar }) {
     { path: "desi-javascript", title: "Javascript", icon: <FaList /> },
     { path: "desi-react", title: "React", icon: <FaList /> },
     { path: "desi-node", title: "Node", icon: <FaList /> },
+    { path: "interview", title: "Interview", icon: <FaList /> },
     { path: "quant", title: "Quantitative Aptitude", icon: <FaDumbbell /> },
     { path: "dsa", title: "DSA", icon: <FaList /> },
     { path: "todolist", title: "To Do List", icon: <FaList /> },
