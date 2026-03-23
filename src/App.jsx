@@ -26,6 +26,7 @@ import DesiCSS from "./components/desi-CSS/DesiCSS.jsx";
 import DesiJavascript from "./components/desi-Javascript/DesiJavascript.jsx";
 import DesiReact from "./components/desi-React/DesiReact.jsx";
 import DesiNode from "./components/desi-Node/DesiNode.jsx";
+import DSA from "./components/desi-DSA/DSA.jsx";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
             <Route path="quiz" element={<Quiz />} />
             <Route path="todolist" element={<TodoList />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="dsa" element={<DSA />} />
 
             {/* TASK PARENT ROUTE */}
             <Route path="task-management" element={<TaskManagement />}>
