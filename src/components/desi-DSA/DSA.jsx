@@ -162,11 +162,6 @@ function DSA() {
           )}
         </div>
       </div>
-      <EditDsaModal
-        selectedDsa={selectedDsa}
-        onClose={() => setSelectedDsa(null)}
-        onUpdate={getDsa}
-      />
     </>
   );
 }
