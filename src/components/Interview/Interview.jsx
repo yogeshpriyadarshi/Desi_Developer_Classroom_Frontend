@@ -28,18 +28,21 @@ function Interview() {
 
   // Fetch interview questions
   const getInterviews = async () => {
-    const res = await axiosInstance.get("/interview");
-    setInterviews(res.data.interview);
+    const res = await axiosInstance.get(`/interview/fetch-by-topic/${topicId}`);
+    setInterviews(res.data.interviews);
   };
 
   useEffect(() => {
     getSubjects();
-    getInterviews();
   }, []);
 
   useEffect(() => {
     if (subjectId) getTopics();
   }, [subjectId]);
+
+  useEffect(() => {
+    if (topicId) getInterviews();
+  }, [topicId]);
 
   return (
     <div className="p-6 max-w-5xl mx-auto flex flex-col gap-6">
@@ -77,33 +80,6 @@ function Interview() {
         </div>
       </div>
 
-      {/* Add Question Card */}
-      <div className="bg-white shadow-md rounded-2xl p-5 flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">Add Question</h2>
-
-        <div className="flex flex-col gap-2">
-          <label>Question</label>
-          <textarea
-            className="border rounded-lg p-3 min-h-[80px]"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label>Explanation (HTML Supported)</label>
-          <textarea
-            className="border rounded-lg p-3 min-h-[120px]"
-            value={explanation}
-            onChange={(e) => setExplanation(e.target.value)}
-          />
-        </div>
-
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg w-fit">
-          Save Question
-        </button>
-      </div>
-
       {/* Interview List */}
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Interview Questions</h2>
@@ -114,7 +90,12 @@ function Interview() {
             className="bg-white shadow-md rounded-2xl p-5 flex flex-col gap-3"
           >
             {/* Question */}
-            <h3 className="font-semibold text-lg">{item.question}</h3>
+            <div
+              className="prose max-w-none text-gray-700"
+              dangerouslySetInnerHTML={{
+                __html: item.question,
+              }}
+            />
 
             {/* Explanation (HTML Render) */}
             <div
