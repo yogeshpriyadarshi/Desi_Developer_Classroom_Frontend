@@ -6,13 +6,13 @@ function SideBar({ closeSidebar }) {
   const location = useLocation();
 
   const sidebar = [
-    { path: "desi-html", title: "HTML", icon: <FaList /> },
-    { path: "desi-css", title: "CSS", icon: <FaList /> },
-    { path: "desi-javascript", title: "Javascript", icon: <FaList /> },
-    { path: "desi-react", title: "React", icon: <FaList /> },
-    { path: "desi-node", title: "Node", icon: <FaList /> },
+    // { path: "desi-html", title: "HTML", icon: <FaList /> },
+    // { path: "desi-css", title: "CSS", icon: <FaList /> },
+    // { path: "desi-javascript", title: "Javascript", icon: <FaList /> },
+    // { path: "desi-react", title: "React", icon: <FaList /> },
+    // { path: "desi-node", title: "Node", icon: <FaList /> },
     { path: "interview", title: "Interview", icon: <FaList /> },
-    { path: "quant", title: "Quantitative Aptitude", icon: <FaDumbbell /> },
+    //{ path: "quant", title: "Quantitative Aptitude", icon: <FaDumbbell /> },
     { path: "dsa", title: "DSA", icon: <FaList /> },
     { path: "todolist", title: "To Do List", icon: <FaList /> },
     { path: "task-management", title: "Task Management", icon: <FaList /> },

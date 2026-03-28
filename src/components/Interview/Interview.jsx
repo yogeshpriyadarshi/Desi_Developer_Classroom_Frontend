@@ -9,8 +9,7 @@ function Interview() {
 
   const [interviews, setInterviews] = useState([]);
 
-  const [question, setQuestion] = useState("");
-  const [explanation, setExplanation] = useState("");
+  const [activeId, setActiveId] = useState(null); // for showing accordian behaviour
 
   // Fetch subjects
   const getSubjects = async () => {
@@ -44,6 +43,11 @@ function Interview() {
     if (topicId) getInterviews();
   }, [topicId]);
 
+  // 👇 toggle inteview question explanation
+  const toggleExplanation = (id) => {
+    setActiveId((prev) => (prev === id ? null : id));
+  };
+
   return (
     <div className="p-6 max-w-5xl mx-auto flex flex-col gap-6">
       {/* Header */}
@@ -55,9 +59,12 @@ function Interview() {
           <select
             className="border px-3 py-2 rounded-lg"
             value={subjectId}
-            onChange={(e) => setSubjectId(e.target.value)}
+            onChange={(e) => {
+              setSubjectId(e.target.value);
+              setTopicId(""); // reset topic
+            }}
           >
-            <option value="">All Subjects</option>
+            <option value="">Select Subjects</option>
             {subjects.map((item) => (
               <option key={item._id} value={item._id}>
                 {item.name}
@@ -70,7 +77,7 @@ function Interview() {
             value={topicId}
             onChange={(e) => setTopicId(e.target.value)}
           >
-            <option value="">All Topics</option>
+            <option value="">Select Topics</option>
             {topics.map((item) => (
               <option key={item._id} value={item._id}>
                 {item.name}
@@ -84,28 +91,44 @@ function Interview() {
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Interview Questions</h2>
 
-        {interviews.map((item) => (
-          <div
-            key={item._id}
-            className="bg-white shadow-md rounded-2xl p-5 flex flex-col gap-3"
-          >
-            {/* Question */}
-            <div
-              className="prose max-w-none text-gray-700"
-              dangerouslySetInnerHTML={{
-                __html: item.question,
-              }}
-            />
+        {interviews.map((item) => {
+          const isOpen = activeId === item._id;
 
-            {/* Explanation (HTML Render) */}
+          return (
             <div
-              className="prose max-w-none text-gray-700"
-              dangerouslySetInnerHTML={{
-                __html: item.explanation,
-              }}
-            />
-          </div>
-        ))}
+              key={item._id}
+              className="bg-white shadow-md rounded-2xl p-5 flex flex-col gap-4 transition-all"
+            >
+              <div className="flex justify-between items-center">
+                {/* Question */}
+                <div
+                  className="prose max-w-none text-gray-800 font-medium"
+                  dangerouslySetInnerHTML={{
+                    __html: item.question,
+                  }}
+                />
+
+                {/* Button */}
+                <button
+                  onClick={() => toggleExplanation(item._id)}
+                  className="self-start bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                >
+                  {isOpen ? "Hide Explanation" : "Show Explanation"}
+                </button>
+              </div>
+
+              {/* Explanation */}
+              {isOpen && (
+                <div
+                  className="prose max-w-none text-gray-600 border-t pt-3"
+                  dangerouslySetInnerHTML={{
+                    __html: item.explanation,
+                  }}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
