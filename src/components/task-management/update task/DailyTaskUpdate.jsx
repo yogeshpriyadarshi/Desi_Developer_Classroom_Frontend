@@ -13,18 +13,7 @@ function DailyTaskUpdate() {
 
   const today = new Date();
 
-  // fetch All tasks
-  const getAllTasks = async () => {
-    try {
-      const res = await axiosInstance.get("/task-management/tasks");
-      setTasks(res.data.tasks);
-    } catch (err) {
-      toast.error("Failed to load tasks");
-    }
-  };
-
   useEffect(() => {
-    getAllTasks();
     getProjects();
   }, []);
 
@@ -74,26 +63,6 @@ function DailyTaskUpdate() {
     getTasks(id);
   };
 
-  // check if task belongs today
-  const isTaskForToday = (task) => {
-    const day = today.getDay();
-    const date = today.getDate();
-
-    if (task.recurrenceType === "daily") return true;
-    if (task.recurrenceType === "weekly") return task.daysOfWeek?.includes(day);
-    if (task.recurrenceType === "monthly") return task.dayOfMonth === date;
-
-    return false;
-  };
-
-  const todaysTasks = tasks.filter(isTaskForToday);
-
-  const priorityColor = {
-    low: "bg-green-100 text-green-700",
-    medium: "bg-yellow-100 text-yellow-700",
-    high: "bg-red-100 text-red-700",
-  };
-
   return (
     <div className="max-w-5xl mx-auto p-6">
       {/* Header */}
@@ -138,13 +107,13 @@ function DailyTaskUpdate() {
 
       {/* Task List */}
 
-      {todaysTasks.length === 0 ? (
+      {tasks.length === 0 ? (
         <div className="bg-gray-50 text-center p-10 rounded-lg">
           <p className="text-gray-500 text-lg">No tasks scheduled for today</p>
         </div>
       ) : (
         <div className="grid gap-4">
-          {todaysTasks.map((task) => (
+          {tasks.map((task) => (
             <div
               key={task._id}
               className="bg-white shadow-md rounded-xl p-5 flex justify-between items-center hover:shadow-lg transition"
@@ -154,20 +123,6 @@ function DailyTaskUpdate() {
                 <h2 className="text-lg font-semibold">{task.title}</h2>
 
                 <p className="text-gray-500 text-sm mt-1">{task.description}</p>
-
-                <div className="flex gap-2 mt-2">
-                  <span
-                    className={`text-xs px-2 py-1 rounded ${
-                      priorityColor[task.priority]
-                    }`}
-                  >
-                    {task.priority}
-                  </span>
-
-                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
-                    {task.recurrenceType}
-                  </span>
-                </div>
               </div>
 
               {/* Button */}

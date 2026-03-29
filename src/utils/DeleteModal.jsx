@@ -1,4 +1,4 @@
-function DeleteModal({ isOpen, onClose, onConfirm, title, message }) {
+export function DeleteModal({ isOpen, onClose, onConfirm, title, message }) {
   if (!isOpen) return null;
 
   return (
@@ -26,5 +26,3 @@ function DeleteModal({ isOpen, onClose, onConfirm, title, message }) {
     </div>
   );
 }
-
-export default Modal;

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import Modal from "../utils/Modal";
+import { DeleteModal } from "../utils/DeleteModal";
 
 const ModalContext = createContext();
 
@@ -30,7 +30,7 @@ export function ModalProvider({ children }) {
     <ModalContext.Provider value={{ showModal, closeModal }}>
       {children}
 
-      <Modal
+      <DeleteModal
         isOpen={modal.isOpen}
         title={modal.title}
         message={modal.message}
