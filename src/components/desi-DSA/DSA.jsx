@@ -1,37 +1,39 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosIntances";
+import Editor from "@monaco-editor/react";
 
 function DSA() {
-  const [subject, setSubject] = useState([]);
-  const [topic, setTopic] = useState([]);
   const [subjectId, setSubjectId] = useState("");
+  const [topic, setTopic] = useState([]);
   const [topicId, setTopicId] = useState("");
 
   const [dsa, setDsa] = useState([]);
-  const [activeExplanation, setActiveExplanation] = useState(null);
+  const [activeQuestion, setActiveQuestion] = useState(null);
 
-  // ✅ Fetch subjects
+  const [codeMap, setCodeMap] = useState({});
+  const [outputMap, setOutputMap] = useState({});
+  const [loadingMap, setLoadingMap] = useState({});
+
+  // Fetch Subjects
   const getSubject = async () => {
-    const response = await axiosInstance.get("/subjects");
-    setSubject(response.data.subjects);
-
-    const dsaSubject = response.data.subjects.find((s) => s.name === "DSA");
-    if (dsaSubject) setSubjectId(dsaSubject._id);
+    const res = await axiosInstance.get("/subjects");
+    const dsaSub = res.data.subjects.find((s) => s.name === "DSA");
+    if (dsaSub) setSubjectId(dsaSub._id);
   };
 
-  // ✅ Fetch topics
+  // Fetch Topics
   const getTopic = async () => {
-    const response = await axiosInstance.get(
+    const res = await axiosInstance.get(
       `/topics/fetch-by-subject/${subjectId}`,
     );
-    setTopic(response.data.topics);
+    setTopic(res.data.topics);
   };
 
-  // ✅ Fetch DSA questions
+  // Fetch Questions
   const getDsa = async () => {
     if (!topicId) return;
-    const response = await axiosInstance.get(`/dsa/${topicId}`);
-    setDsa(response.data.dsas);
+    const res = await axiosInstance.get(`/dsa/${topicId}`);
+    setDsa(res.data.dsas);
   };
 
   useEffect(() => {
@@ -46,7 +48,6 @@ function DSA() {
     if (topicId) getDsa();
   }, [topicId]);
 
-  // 🎨 Difficulty Color
   const getDifficultyColor = (level) => {
     if (level === "easy") return "bg-green-100 text-green-600";
     if (level === "medium") return "bg-yellow-100 text-yellow-600";
@@ -54,115 +55,141 @@ function DSA() {
     return "bg-gray-100 text-gray-600";
   };
 
+  const runCode = async (id) => {
+    try {
+      setLoadingMap((prev) => ({ ...prev, [id]: true }));
+
+      const res = await axiosInstance.post("/run", {
+        code: codeMap[id] || "",
+        language: "javascript",
+      });
+
+      setOutputMap((prev) => ({
+        ...prev,
+        [id]: res.data.output || "No output",
+      }));
+    } catch {
+      setOutputMap((prev) => ({
+        ...prev,
+        [id]: "Error running code",
+      }));
+    } finally {
+      setLoadingMap((prev) => ({ ...prev, [id]: false }));
+    }
+  };
+
   return (
-    <>
-      <div className="p-6 flex flex-col gap-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">DSA Practice</h1>
+    <div className="p-6 max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">🚀 DSA Practice</h1>
 
-          <select
-            className="border border-gray-300 rounded-md px-4 py-2"
-            value={topicId}
-            onChange={(e) => setTopicId(e.target.value)}
-          >
-            <option value="">Select Topic</option>
-            {topic.map((item) => (
-              <option key={item._id} value={item._id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          className="border px-4 py-2 rounded-lg shadow-sm"
+          value={topicId}
+          onChange={(e) => setTopicId(e.target.value)}
+        >
+          <option value="">Select Topic</option>
+          {topic.map((t) => (
+            <option key={t._id} value={t._id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
-        {/* Questions */}
-        <div className="flex flex-col gap-4">
-          {dsa.length === 0 ? (
-            <p className="text-gray-500">No questions available</p>
-          ) : (
-            dsa.map((item, index) => (
+      {/* Questions */}
+      <div className="space-y-4">
+        {dsa.length === 0 ? (
+          <p className="text-gray-500">No questions available</p>
+        ) : (
+          dsa.map((item, index) => {
+            const isOpen = activeQuestion === item._id;
+
+            return (
               <div
                 key={item._id}
-                className="border rounded-xl p-5 shadow-sm bg-white hover:shadow-md transition"
+                className="border rounded-2xl p-5 bg-white shadow hover:shadow-lg transition"
               >
-                {/* Top Section */}
-                <div className="flex justify-between items-start flex-wrap gap-2">
+                {/* Header */}
+                <div
+                  className="flex justify-between items-center cursor-pointer"
+                  onClick={() => setActiveQuestion(isOpen ? null : item._id)}
+                >
                   <h2 className="font-semibold text-lg">
                     Q{index + 1}. {item.title}
                   </h2>
 
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {/* Difficulty Badge */}
+                  <div className="flex items-center gap-2">
                     <span
-                      className={`text-xs px-2 py-1 rounded-full font-medium ${getDifficultyColor(
+                      className={`text-xs px-3 py-1 rounded-full ${getDifficultyColor(
                         item.difficulty,
                       )}`}
                     >
                       {item.difficulty}
                     </span>
 
-                    {/* Source */}
-                    {item.source && (
-                      <span className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-600">
-                        {item.source}
-                      </span>
-                    )}
-
-                    {/* Source Link */}
-                    {item.sourceLink && (
-                      <a
-                        href={item.sourceLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-500 underline"
-                      >
-                        Visit
-                      </a>
-                    )}
+                    <span className="text-sm">{isOpen ? "▲" : "▼"}</span>
                   </div>
                 </div>
 
-                {/* Question */}
-                <div
-                  className="prose max-w-none mt-3"
-                  dangerouslySetInnerHTML={{ __html: item.question }}
-                />
-
-                {/* Toggle Button */}
-                <button
-                  className="mt-4 text-sm px-3 py-1 rounded-md bg-blue-500 text-white hover:bg-blue-600"
-                  onClick={() =>
-                    setActiveExplanation(
-                      activeExplanation === item._id ? null : item._id,
-                    )
-                  }
-                >
-                  {activeExplanation === item._id
-                    ? "Hide Explanation"
-                    : "Show Explanation"}
-                </button>
-
-                {/* Explanation */}
-                {activeExplanation === item._id && (
-                  <div className="mt-4 p-4 border-t bg-gray-50 rounded-md">
-                    <h3 className="font-semibold mb-2 text-gray-700">
-                      Explanation
-                    </h3>
-
+                {/* Expanded */}
+                {isOpen && (
+                  <div className="mt-4 space-y-6">
+                    {/* Question */}
                     <div
                       className="prose max-w-none"
-                      dangerouslySetInnerHTML={{
-                        __html: item.explanation,
-                      }}
+                      dangerouslySetInnerHTML={{ __html: item.question }}
                     />
+
+                    {/* Editor */}
+                    <div className="bg-gray-900 rounded-xl p-4">
+                      <Editor
+                        height="250px"
+                        defaultLanguage="javascript"
+                        value={codeMap[item._id] || ""}
+                        onChange={(val) =>
+                          setCodeMap((prev) => ({
+                            ...prev,
+                            [item._id]: val,
+                          }))
+                        }
+                        theme="vs-dark"
+                      />
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          runCode(item._id);
+                        }}
+                        className="mt-3 bg-green-500 px-4 py-2 rounded-lg text-white hover:bg-green-600"
+                      >
+                        {loadingMap[item._id] ? "Running..." : "Run Code"}
+                      </button>
+
+                      <div className="mt-3 bg-black text-green-400 p-3 rounded-lg min-h-[60px]">
+                        <pre>{outputMap[item._id]}</pre>
+                      </div>
+                    </div>
+
+                    {/* Explanation */}
+                    <div className="bg-gray-50 p-4 rounded-xl">
+                      <h3 className="font-semibold mb-2">Explanation</h3>
+                      <div
+                        className="prose max-w-none"
+                        dangerouslySetInnerHTML={{
+                          __html: item.explanation,
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
               </div>
-            ))
-          )}
-        </div>
+            );
+          })
+        )}
       </div>
-    </>
+    </div>
   );
 }
 

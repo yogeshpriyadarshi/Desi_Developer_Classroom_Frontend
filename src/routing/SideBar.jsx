@@ -15,6 +15,7 @@ function SideBar({ closeSidebar }) {
     //{ path: "quant", title: "Quantitative Aptitude", icon: <FaDumbbell /> },
     { path: "dsa", title: "DSA", icon: <FaList /> },
     { path: "todolist", title: "To Do List", icon: <FaList /> },
+    { path: "online-coding", title: "Online Coding", icon: <FaList /> },
     { path: "task-management", title: "Task Management", icon: <FaList /> },
   ];
 

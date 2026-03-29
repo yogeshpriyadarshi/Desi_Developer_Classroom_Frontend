@@ -28,6 +28,7 @@ import DesiReact from "./components/desi-React/DesiReact.jsx";
 import DesiNode from "./components/desi-Node/DesiNode.jsx";
 import DSA from "./components/desi-DSA/DSA.jsx";
 import Interview from "./components/Interview/Interview.jsx";
+import OnlineCoding from "./components/onlineCoding/OnlineCoding.jsx";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="dsa" element={<DSA />} />
             <Route path="interview" element={<Interview />} />
+            <Route path="online-coding" element={<OnlineCoding />} />
 
             {/* TASK PARENT ROUTE */}
             <Route path="task-management" element={<TaskManagement />}>
