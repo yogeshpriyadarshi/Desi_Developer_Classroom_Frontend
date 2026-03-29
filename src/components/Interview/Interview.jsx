@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosIntances";
+import Loading from "../../utils/Loding";
 
 function Interview() {
   const [subjects, setSubjects] = useState([]);
@@ -10,25 +11,32 @@ function Interview() {
   const [interviews, setInterviews] = useState([]);
 
   const [activeId, setActiveId] = useState(null); // for showing accordian behaviour
+  const [loading, setLoading] = useState(false);
 
   // Fetch subjects
   const getSubjects = async () => {
+    setLoading(true);
     const res = await axiosInstance.get("/subjects");
     setSubjects(res.data.subjects);
+    setLoading(false);
   };
 
   // Fetch topics
   const getTopics = async () => {
+    setLoading(true);
     const res = await axiosInstance.get(
       `/topics/fetch-by-subject/${subjectId}`,
     );
     setTopics(res.data.topics);
+    setLoading(false);
   };
 
   // Fetch interview questions
   const getInterviews = async () => {
+    setLoading(true);
     const res = await axiosInstance.get(`/interview/fetch-by-topic/${topicId}`);
     setInterviews(res.data.interviews);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -47,6 +55,8 @@ function Interview() {
   const toggleExplanation = (id) => {
     setActiveId((prev) => (prev === id ? null : id));
   };
+
+  if (loading) return <Loading />;
 
   return (
     <div className="p-6 max-w-5xl mx-auto flex flex-col gap-6">
