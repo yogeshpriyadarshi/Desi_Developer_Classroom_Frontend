@@ -91,14 +91,19 @@ function TaskLogViewer() {
       </div>
 
       {/* Date Picker */}
-      <div className="bg-white p-4 rounded-lg shadow mb-6 flex items-center gap-4">
-        <label className="font-medium">Select Date</label>
+      <div className="bg-white p-4 rounded-lg shadow mb-6 flex justify-around items-center gap-4">
+       <div>
+  <label className="font-medium mx-4">Select Date</label>
         <input
           type="date"
           className="border p-2 rounded"
           value={date}
           onChange={(e) => setDate(e.target.value)}
         />
+       </div>
+      
+        <p className="font-bold" > Average Productivity: {avgProductivity}</p>
+        <p className="font-bold"  > Total Time: {totalTime} minutes</p>
       </div>
 
       {/* Loading */}

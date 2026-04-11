@@ -29,11 +29,15 @@ import DesiNode from "./components/desi-Node/DesiNode.jsx";
 import DSA from "./components/desi-DSA/DSA.jsx";
 import Interview from "./components/Interview/Interview.jsx";
 import OnlineCoding from "./components/onlineCoding/OnlineCoding.jsx";
+import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
+import About from "./components/About.jsx";
+import Contact from "./components/Contact.jsx";
 
 function App() {
   return (
     <>
-      <Routes>
+      {/* your routes/components */}
+         <Routes>
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<Login />} />
@@ -43,6 +47,9 @@ function App() {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Home />}>
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
             <Route path="study" element={<Study />} />
             <Route path="practice" element={<Practice />} />
             <Route path="quant" element={<Quant />} />
@@ -74,7 +81,9 @@ function App() {
             <Route path="myeditor" element={<MyEditor />} />
           </Route>
         </Route>
-      </Routes>
+      </Routes> 
+  
+   
       <ToastContainer position="top-right" autoClose={3000} />
     </>
   );

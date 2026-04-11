@@ -159,7 +159,7 @@ function AddTask() {
   return (
     <div className="max-w-3xl mx-auto p-6">
       {/* Header */}
-      <div className="bg-white shadow-md rounded-xl p-4 mb-6">
+      <div className=" shadow-md rounded-xl p-4 mb-6">
         <p className="text-sm text-gray-500">
           Project:{" "}
           <span className="font-semibold">{category?.project?.name}</span>
@@ -170,7 +170,7 @@ function AddTask() {
       </div>
 
       {/* Form */}
-      <div className="bg-white shadow-lg rounded-xl p-6 space-y-5">
+      <div className=" shadow-lg rounded-xl p-6 space-y-5">
         <h2 className="text-xl font-bold">
           {editMode ? "Edit Task" : "Create Task"}
         </h2>

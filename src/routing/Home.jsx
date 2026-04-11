@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import SideBar from "./SideBar";
 import Header from "./Header";
+import Footer from "./Footer";
 
 function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,12 +21,13 @@ function Home() {
       {/* Layout */}
       <div className="flex flex-1">
         {/* Sidebar */}
-        <aside
-          className={`fixed md:static top-0 left-0 h-full z-50 bg-gray-100 border-r p-4 w-56 transform transition-transform duration-300
-          ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
-        >
-          <SideBar closeSidebar={() => setIsOpen(false)} />
-        </aside>
+      <aside
+  className={`fixed md:static top-0 left-0 h-full z-50  border-r p-2
+  transform transition-transform duration-300
+  ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+>
+  <SideBar closeSidebar={() => setIsOpen(false)} />
+</aside>
 
         {/* Overlay */}
         {isOpen && (
@@ -36,10 +38,11 @@ function Home() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 p-4 sm:p-6 bg-gray-50">
+        <main className="flex-1 p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
+      <Footer />
     </div>
   );
 }

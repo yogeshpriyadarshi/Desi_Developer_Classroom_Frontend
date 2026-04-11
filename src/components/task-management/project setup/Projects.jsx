@@ -74,7 +74,7 @@ function Projects() {
   return (
     <div className="max-w-4xl mx-auto mt-8">
       {/* CREATE PROJECT CARD */}
-      <div className="bg-white shadow-lg rounded-xl p-6 mb-8">
+      <div className=" shadow-lg rounded-xl p-6 mb-8">
         <h1 className="text-xl font-bold mb-4 text-center">
           Create New Project
         </h1>

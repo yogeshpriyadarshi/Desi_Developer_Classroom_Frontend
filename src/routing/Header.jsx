@@ -1,44 +1,80 @@
-import { Link } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosIntances";
 import { FaHome, FaSignOutAlt, FaUser } from "react-icons/fa";
 
 function Header() {
+  const navigate = useNavigate();
+
   const logout = async () => {
     try {
       await axiosInstance.post("/auth/logout");
+
       localStorage.removeItem("access_token");
-      window.location.href = "/login";
+
+      // Better navigation instead of reload
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
   };
 
+  const linkStyle =
+    "flex items-center gap-2 px-4 py-2 rounded-lg transition-all";
+
   return (
-    <div className="flex items-center gap-4 p-4 bg-gray-100">
-      <Link
-        to="/"
-        className="flex items-center gap-2 text-blue-500 text-xl border border-blue-500 p-2 rounded-md hover:bg-blue-50"
-      >
-        <FaHome />
-        Home
-      </Link>
+    <header className="bg-whiteshadow-md px-6 py-3 flex justify-between items-center">
+      
+      {/* Logo / Title */}
+      <h1 className="text-xl font-bold text-blue-600 mx-5">
+        Desi Developer Classroom
+      </h1>
 
-      <Link
-        to="/profile"
-        className="flex items-center gap-2 text-blue-500 text-xl border border-blue-500 p-2 rounded-md hover:bg-blue-50"
-      >
-        <FaUser />
-        Profile
-      </Link>
+      {/* Navigation */}
+      <nav className="flex items-center gap-4">
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `${linkStyle} ${
+              isActive
+                ? "bg-blue-500 text-white"
+                : "text-blue-500 hover:bg-blue-50"
+            }`
+          }
+        >
+          <FaHome />
+          Home
+        </NavLink>
 
-      <button
-        onClick={logout}
-        className="flex items-center gap-2 border border-gray-300 rounded-md p-2 hover:bg-gray-200"
-      >
-        <FaSignOutAlt />
-        Logout
-      </button>
-    </div>
+        <NavLink
+          to="/profile"
+          className={({ isActive }) =>
+            `${linkStyle} ${
+              isActive
+                ? "bg-blue-500 text-white"
+                : "text-blue-500 hover:bg-blue-50"
+            }`
+          }
+        >
+          <FaUser />
+          Profile
+        </NavLink>
+        <button
+  onClick={() => document.documentElement.classList.toggle("dark")}
+>
+  Toggle Dark Mode
+</button>
+
+
+        {/* Logout */}
+        <button
+          onClick={logout}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:bg-red-50 text-gray-700 hover:text-red-500 transition-all"
+        >
+          <FaSignOutAlt />
+          Logout
+        </button>
+      </nav>
+    </header>
   );
 }
 

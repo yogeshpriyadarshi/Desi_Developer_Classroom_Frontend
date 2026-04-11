@@ -172,13 +172,13 @@ function TaskCategory() {
   return (
     <div className="p-6 max-w-5xl mx-auto">
       {/* PROJECT HEADER */}
-      <div className="bg-white shadow-md rounded-lg p-4 mb-6 flex items-center gap-2">
+      <div className=" shadow-md rounded-lg p-4 mb-6 flex items-center gap-2">
         <span className="font-semibold text-gray-600">Project:</span>
         <span className="font-bold text-lg">{project?.name}</span>
       </div>
 
       {/* CATEGORY FORM */}
-      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
+      <div className=" shadow-md rounded-lg p-6 mb-8">
         <h1 className="text-xl font-bold mb-4">
           {editMode ? "Update Category" : "Add New Category"}
         </h1>
@@ -206,14 +206,14 @@ function TaskCategory() {
             <>
               <button
                 onClick={updateCategory}
-                className="bg-green-500 text-white px-5 py-2 rounded hover:bg-green-600"
+                className="bg-green-500  px-5 py-2 rounded hover:bg-green-600"
               >
                 Update
               </button>
 
               <button
                 onClick={cancelEdit}
-                className="bg-gray-400 text-white px-5 py-2 rounded hover:bg-gray-500"
+                className="bg-gray-400 px-5 py-2 rounded hover:bg-gray-500"
               >
                 Cancel
               </button>
@@ -221,7 +221,7 @@ function TaskCategory() {
           ) : (
             <button
               onClick={addCategory}
-              className="bg-blue-500 text-white px-5 py-2 rounded hover:bg-blue-600"
+              className="bg-blue-500  px-5 py-2 rounded hover:bg-blue-600"
             >
               Add Category
             </button>
