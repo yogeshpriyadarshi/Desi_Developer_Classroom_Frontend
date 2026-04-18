@@ -32,6 +32,10 @@ import OnlineCoding from "./components/onlineCoding/OnlineCoding.jsx";
 import PrivacyPolicy from "./components/PrivacyPolicy.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
+import ScreenRecorder from "./components/recoder/ScreenRecorder.jsx";
+import DrawingCanvas from "./components/annotation/DrawingCanvas.jsx";
+import VideoRecorder from "./components/recoder/VideoRecorder.jsx";
+import ScreenCamAudioRecorder from "./components/recoder/ScreenCamAudioRecorder.jsx";
 
 function App() {
   return (
@@ -42,6 +46,7 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+
         </Route>
 
         {/* Protected Routes */}
@@ -64,6 +69,10 @@ function App() {
             <Route path="dsa" element={<DSA />} />
             <Route path="interview" element={<Interview />} />
             <Route path="online-coding" element={<OnlineCoding />} />
+            <Route path="recorder" element={<ScreenRecorder />} />
+            <Route path="drawing" element={<DrawingCanvas />} />
+            <Route path="video-recorder" element={<VideoRecorder />} />
+            <Route path="screenandvideo-recorder" element={<ScreenCamAudioRecorder />} />
 
             {/* TASK PARENT ROUTE */}
             <Route path="task-management" element={<TaskManagement />}>

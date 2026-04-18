@@ -11,6 +11,10 @@ function SideBar({ closeSidebar }) {
     { path: "todolist", title: "To Do List", icon: <FaList /> },
     { path: "online-coding", title: "Online Coding", icon: <FaList /> },
     { path: "task-management", title: "Task Management", icon: <FaList /> },
+    { path: "recorder", title: "Screen Recorder", icon: <FaDumbbell /> },
+    { path: "drawing", title: "Drawing", icon: <FaList /> },
+    { path: "video-recorder", title: "Video Recorder", icon: <FaList /> },
+    { path: "screenandvideo-recorder", title: "Screen + Video Recorder", icon: <FaList /> }
   ];
 
   return (

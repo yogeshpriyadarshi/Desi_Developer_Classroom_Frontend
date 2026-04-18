@@ -61,8 +61,8 @@ function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen ">
+      <div className=" shadow-lg rounded-xl p-8 w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-6">
           Login to Your Account
         </h2>
@@ -79,7 +79,7 @@ function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={handleKeyPress}
-            className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 outline-none"
+            className="w-full border  rounded-md p-2 focus:ring-2 focus:ring-blue-400 outline-none"
           />
         </div>
 
@@ -110,7 +110,7 @@ function Login() {
         <button
           onClick={handleLogin}
           disabled={loading}
-          className={`w-full py-2 rounded-md text-white transition
+          className={`w-full py-2 rounded-md  transition
             ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
