@@ -35,9 +35,9 @@ import ScreenRecorder from "./components/recoder/ScreenRecorder.jsx";
 import DrawingCanvas from "./components/annotation/DrawingCanvas.jsx";
 import VideoRecorder from "./components/recoder/VideoRecorder.jsx";
 import ScreenCamAudioRecorder from "./components/recoder/ScreenCamAudioRecorder.jsx";
-import Topic from "./components/topic/topic.jsx";
 import HomeLayout from "./routing/HomeLayout.jsx";
 import Home from "./routing/Home.jsx";
+import Topic from "./components/topic/Topic.jsx";
 
 function App() {
   return (
