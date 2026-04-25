@@ -13,14 +13,7 @@ const axiosInstance = axios.create({
 
 // Request Interceptors
 axiosInstance.interceptors.request.use(
-  (config) => {
-    // Attach token automatically
-    const token = localStorage.getItem("access_token");
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
+  (config) => {    
     return config;
   },
   // Handle error
@@ -32,12 +25,6 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   // Handle error
   (error) => {
-    // Handle expired token
-    if (error.response?.status === 401) {
-      localStorage.removeItem("access_token");
-      window.location.href = "/login";
-    }
-
     return Promise.reject(error);
   },
 );

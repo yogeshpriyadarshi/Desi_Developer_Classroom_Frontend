@@ -1,7 +1,6 @@
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Routes, Route } from "react-router-dom";
-import Home from "./routing/Home.jsx";
 import Practice from "./components/practice/Practice";
 import Quiz from "./components/quiz/Quiz";
 import Study from "./components/study/Study";
@@ -36,63 +35,43 @@ import ScreenRecorder from "./components/recoder/ScreenRecorder.jsx";
 import DrawingCanvas from "./components/annotation/DrawingCanvas.jsx";
 import VideoRecorder from "./components/recoder/VideoRecorder.jsx";
 import ScreenCamAudioRecorder from "./components/recoder/ScreenCamAudioRecorder.jsx";
+import Topic from "./components/topic/topic.jsx";
+import HomeLayout from "./routing/HomeLayout.jsx";
+import Home from "./routing/Home.jsx";
 
 function App() {
   return (
     <>
-      {/* your routes/components */}
-         <Routes>
-        {/* Public Routes */}
-        <Route element={<PublicRoute />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-
+      <Routes>
+        <Route path="/" element={<HomeLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="study" element={<Study />} />
+          <Route path="practice" element={<Practice />} />
+          <Route path="quant" element={<Quant />} />
+          <Route path="desi-html" element={<DesiHtml />} />
+          <Route path="desi-css" element={<DesiCSS />} />
+          <Route path="desi-javascript" element={<DesiJavascript />} />
+          <Route path="desi-react" element={<DesiReact />} />
+          <Route path="desi-node" element={<DesiNode />} />
+          <Route path="quiz" element={<Quiz />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="dsa" element={<DSA />} />
+          <Route path="interview" element={<Interview />} />
+          <Route path="online-coding" element={<OnlineCoding />} />
+          <Route path="recorder" element={<ScreenRecorder />} />
+          <Route path="drawing" element={<DrawingCanvas />} />
+          <Route path="video-recorder" element={<VideoRecorder />} />
+          <Route path="screenandvideo-recorder" element={<ScreenCamAudioRecorder />} />
+          <Route path="myeditor" element={<MyEditor />} />
+          <Route path="topics/:slug" element={<Topic />} />
         </Route>
+      </Routes>
 
-        {/* Protected Routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Home />}>
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-            <Route path="study" element={<Study />} />
-            <Route path="practice" element={<Practice />} />
-            <Route path="quant" element={<Quant />} />
-            <Route path="desi-html" element={<DesiHtml />} />
-            <Route path="desi-css" element={<DesiCSS />} />
-            <Route path="desi-javascript" element={<DesiJavascript />} />
-            <Route path="desi-react" element={<DesiReact />} />
-            <Route path="desi-node" element={<DesiNode />} />
-            <Route path="quiz" element={<Quiz />} />
-            <Route path="todolist" element={<TodoList />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="dsa" element={<DSA />} />
-            <Route path="interview" element={<Interview />} />
-            <Route path="online-coding" element={<OnlineCoding />} />
-            <Route path="recorder" element={<ScreenRecorder />} />
-            <Route path="drawing" element={<DrawingCanvas />} />
-            <Route path="video-recorder" element={<VideoRecorder />} />
-            <Route path="screenandvideo-recorder" element={<ScreenCamAudioRecorder />} />
 
-            {/* TASK PARENT ROUTE */}
-            <Route path="task-management" element={<TaskManagement />}>
-              <Route path="projects" element={<Projects />} />
-              <Route path="task/:id" element={<AddTask />} />
-              <Route path="category/:id" element={<TaskCategory />} />
-              <Route path="daily-task-update" element={<DailyTaskUpdate />} />
-              <Route
-                path="daily-task-performance/:taskId"
-                element={<DailyTaskPerformance />}
-              />
-              <Route path="task-log-viewer" element={<TaskLogViewer />} />
-            </Route>
 
-            <Route path="myeditor" element={<MyEditor />} />
-          </Route>
-        </Route>
-      </Routes> 
-  
-   
       <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
