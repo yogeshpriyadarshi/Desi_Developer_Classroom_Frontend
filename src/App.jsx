@@ -38,6 +38,7 @@ import ScreenCamAudioRecorder from "./components/recoder/ScreenCamAudioRecorder.
 import HomeLayout from "./routing/HomeLayout.jsx";
 import Home from "./routing/Home.jsx";
 import Topic from "./components/topic/Topic.jsx";
+import ShortVideoCreator from "./components/videoEditor/ShortVideoCreator.jsx";
 
 function App() {
   return (
@@ -67,6 +68,7 @@ function App() {
           <Route path="screenandvideo-recorder" element={<ScreenCamAudioRecorder />} />
           <Route path="myeditor" element={<MyEditor />} />
           <Route path="topics/:slug" element={<Topic />} />
+          <Route path="video-editor" element={<ShortVideoCreator />} />
         </Route>
       </Routes>
 

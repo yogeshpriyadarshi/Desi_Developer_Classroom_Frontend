@@ -11,7 +11,8 @@ function SideBar({ closeSidebar }) {
     { path: "recorder", title: "Screen Recorder", icon: <FaDumbbell /> },
     { path: "drawing", title: "Drawing", icon: <FaList /> },
     { path: "video-recorder", title: "Video Recorder", icon: <FaList /> },
-    { path: "screenandvideo-recorder", title: "Screen + Video Recorder", icon: <FaList /> }
+    { path: "screenandvideo-recorder", title: "Screen + Video Recorder", icon: <FaList /> },
+    { path: "video-editor", title: "Video Editor", icon: <FaList /> }
   ];
 
   return (

@@ -102,7 +102,7 @@ function DSA() {
             return (
               <div
                 key={item._id}
-                className="border rounded-2xl p-5 bg-white shadow hover:shadow-lg transition"
+                className="border rounded-2xl p-5 shadow hover:shadow-lg transition"
               >
                 {/* Header */}
                 <div
@@ -144,7 +144,7 @@ function DSA() {
                       dangerouslySetInnerHTML={{ __html: item.question }}
                     />
                     {/* Explanation */}
-                    <div className="bg-gray-50 p-4 rounded-xl">
+                    <div className=" p-4 rounded-xl">
                       <h3 className="font-semibold mb-2">Explanation</h3>
                       <div
                         className="prose max-w-none"
